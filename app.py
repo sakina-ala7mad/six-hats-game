@@ -4,7 +4,7 @@ import streamlit as st
 
 import db
 from content import HATS, HAT_ORDER, PUZZLE_SCENARIOS, SCENARIO_PROMPTS
-from styles import inject_css, hat_button_css, PALETTE
+from styles import inject_css,hat_button_css, PALETTE
 
 st.set_page_config(page_title="Six Hats Game", page_icon="🎩", layout="centered")
 
