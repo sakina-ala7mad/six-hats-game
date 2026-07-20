@@ -38,15 +38,17 @@ def theme_vars(dark: bool) -> dict:
             "border": PALETTE["slate"],
             "accent": PALETTE["blue"],
             "accent2": PALETTE["coral"],
+            "input_bg": "#0a3157",
         }
     return {
         "bg": "#f4f6f8",
         "bg_card": PALETTE["white"],
         "text": PALETTE["navy"],
-        "text_muted": PALETTE["slate"],
+        "text_muted": "#3d4a5c",
         "border": PALETTE["mauve"],
         "accent": PALETTE["blue"],
         "accent2": PALETTE["coral"],
+        "input_bg": "#ffffff",
     }
 
 
@@ -54,23 +56,91 @@ def inject_css(dark: bool) -> str:
     v = theme_vars(dark)
     return f"""
 <style>
+/* ---- base app background/text ---- */
 .stApp {{
     background-color: {v['bg']};
     color: {v['text']};
 }}
-h1, h2, h3, h4, p, span, label, .stMarkdown {{
+
+/* ---- force readable text everywhere EXCEPT our own colored
+   pill/badge/hat-button elements, which set their own explicit
+   contrast color and must not be overridden ---- */
+.stApp *:not(.hc-pill):not(.hc-pill *):not(.hc-badge):not(.hc-badge *)
+  :not(.hc-team-code):not([class*="hatbtn"]):not([class*="hatbtn"] *)
+  :not(div.stButton):not(div.stButton *)
+  :not([data-testid="stFormSubmitButton"]):not([data-testid="stFormSubmitButton"] *) {{
     color: {v['text']} !important;
 }}
+
+/* ---- headings / markdown text ---- */
+h1, h2, h3, h4, h5, h6,
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li,
+[data-testid="stMarkdownContainer"] span,
+[data-testid="stMarkdownContainer"] strong {{
+    color: {v['text']} !important;
+}}
+
+/* ---- widget labels (e.g. "Your name", "Team code") ---- */
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label,
+.stApp label {{
+    color: {v['text']} !important;
+}}
+
+/* ---- captions / muted helper text ---- */
+[data-testid="stCaptionContainer"] {{
+    color: {v['text_muted']} !important;
+}}
+
+/* ---- text inputs / text areas ---- */
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea {{
+    color: {v['text']} !important;
+    background-color: {v['input_bg']} !important;
+    border: 1px solid {v['border']} !important;
+}}
+[data-testid="stTextInput"] input::placeholder,
+[data-testid="stTextArea"] textarea::placeholder {{
+    color: {v['text_muted']} !important;
+    opacity: 0.8;
+}}
+
+/* ---- radio button options ---- */
+[data-testid="stRadio"] label p,
+[data-testid="stRadio"] div[role="radiogroup"] label {{
+    color: {v['text']} !important;
+}}
+
+/* ---- tabs ---- */
+[data-testid="stTabs"] button p {{
+    color: {v['text']} !important;
+}}
+
+/* ---- select dropdowns (menu options render in a page-level portal,
+   so these rules are intentionally NOT scoped under .stApp) ---- */
+[data-baseweb="popover"] li,
+[data-baseweb="menu"] li,
+[data-baseweb="select"] * {{
+    color: {PALETTE['navy']} !important;
+}}
+
+/* ---- sidebar ---- */
 [data-testid="stSidebar"] {{
     background-color: {v['bg_card']};
     border-right: 1px solid {v['border']};
 }}
+
+/* ---- cards / pills / badges (kept independent of forced text color) ---- */
 .hc-card {{
     background-color: {v['bg_card']};
     border: 1px solid {v['border']};
     border-radius: 14px;
     padding: 1.25rem 1.5rem;
     margin-bottom: 1rem;
+}}
+.hc-card, .hc-card * {{
+    color: {v['text']};
 }}
 .hc-badge {{
     display: inline-block;
@@ -105,20 +175,52 @@ h1, h2, h3, h4, p, span, label, .stMarkdown {{
     padding: 0.5rem 1rem;
     display: inline-block;
 }}
-div.stButton > button {{
+
+/* ---- buttons (default accent styling) ---- */
+div.stButton > button,
+div[data-testid="stFormSubmitButton"] button {{
     background-color: {v['accent']};
-    color: white;
+    color: white !important;
     border: none;
     border-radius: 10px;
     padding: 0.5rem 1.2rem;
     font-weight: 600;
 }}
-div.stButton > button:hover {{
-    background-color: {v['accent2']};
-    color: white;
+div.stButton > button *,
+div[data-testid="stFormSubmitButton"] button * {{
+    color: white !important;
 }}
+div.stButton > button:hover,
+div[data-testid="stFormSubmitButton"] button:hover {{
+    background-color: {v['accent2']};
+    color: white !important;
+}}
+
 hr {{
     border-color: {v['border']};
+}}
+</style>
+"""
+
+
+def hat_button_css(hat_name: str, color: str, text_on: str, key: str, selected: bool) -> str:
+    """CSS for one colored hat-picker button, targeted via Streamlit's
+    key-based `.st-key-<key>` container class (Streamlit >= 1.36)."""
+    border = "4px solid #ffffff" if selected else "2px solid transparent"
+    return f"""
+<style>
+.st-key-{key} button {{
+    background-color: {color} !important;
+    color: {text_on} !important;
+    border: {border} !important;
+    box-shadow: {"0 0 0 2px " + PALETTE["navy"] if selected else "none"};
+    width: 100%;
+}}
+.st-key-{key} button * {{
+    color: {text_on} !important;
+}}
+.st-key-{key} button:hover {{
+    filter: brightness(0.95);
 }}
 </style>
 """

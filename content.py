@@ -12,42 +12,58 @@ HATS = {
     "White": {
         "color": "#ffffff",
         "text_on": "#02223c",
+        "emoji": "⚪",
         "tagline": "Facts & Information",
         "desc": "Neutral, objective. What data do we actually have? What's missing?",
     },
     "Red": {
         "color": "#ff3366",
         "text_on": "#ffffff",
+        "emoji": "🔴",
         "tagline": "Feelings & Intuition",
         "desc": "Emotions, hunches, gut reactions — no justification needed.",
     },
     "Black": {
         "color": "#02223c",
         "text_on": "#ffffff",
+        "emoji": "⚫",
         "tagline": "Caution & Critical Judgement",
         "desc": "Risks, weaknesses, why something might not work.",
     },
     "Yellow": {
         "color": "#f2c14e",
         "text_on": "#02223c",
+        "emoji": "🟡",
         "tagline": "Optimism & Benefits",
         "desc": "Value, feasibility, best-case outcomes.",
     },
     "Green": {
         "color": "#2ec4b6",
         "text_on": "#02223c",
+        "emoji": "🟢",
         "tagline": "Creativity & New Ideas",
         "desc": "Alternatives, provocations, what else could we try?",
     },
     "Blue": {
         "color": "#20a4f3",
         "text_on": "#ffffff",
+        "emoji": "🔵",
         "tagline": "Process & Big Picture",
         "desc": "Managing the thinking itself — agenda, focus, next steps.",
     },
 }
 
 HAT_ORDER = ["White", "Red", "Black", "Yellow", "Green", "Blue"]
+
+# Simple icon per hat, used on the colored hat-picker buttons in Puzzle Mode.
+HAT_EMOJI = {
+    "White": "🤍",
+    "Red": "❤️",
+    "Black": "🖤",
+    "Yellow": "💛",
+    "Green": "💚",
+    "Blue": "💙",
+}
 
 # ---------------------------------------------------------------------------
 # PUZZLE MODE: for each scenario, 6 sentences that must be matched to hats.
