@@ -7,7 +7,7 @@ from pathlib import Path
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
-from src import db, xp_engine, evaluation, avatars
+from src import db,xp_engine,evaluation,avatars
 from src.theme import inject_theme, card
 
 # ---------------------------------------------------------------- setup ----
